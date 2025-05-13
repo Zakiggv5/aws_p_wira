@@ -1,0 +1,22 @@
+/* Basic styling for the whole page */
+body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+/* Styling for the main heading */
+h1 { color: #333; text-align: center; }
+/* Styling for the main content container (white box, centered) */
+.container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+/* Styling for paragraphs within the sensor data section */
+.sensor-data p { margin: 10px 0; font-size: 1.1em; }
+/* Styling for the actual data values (bold, blue) */
+.sensor-data span { font-weight: bold; color: #007bff; }
+/* Styling for paragraphs within the status section */
+.status p { margin: 10px 0; font-size: 1.1em; }
+/* Styling for status indicator text (bold) */
+.status span { font-weight: bold; }
+/* Styling for paragraphs within the sensor data section */
+.actuator-status p { margin: 10px 0; font-size: 1.1em; }
+/* Styling for the actual data values (bold, blue) */
+.actuator-status span { font-weight: bold; color: #007bff; }
+/* Styling for paragraphs within the status section */
+.status p { margin: 10px 0; font-size: 1.1em; }
+/* Styling for status indicator text (bold) */
+.status span { font-weight: bold; }

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>ESP32 Penyetabil Kenyamanan Ruangan</title>
+    <link rel="stylesheet" href="style.css">
+    <body>
+        <!-- The main container div, applying '.container' styles -->
+        <div class='container'>
+            <!-- Main heading -->
+            <h1>Penyetabil Kenyamanan Ruangan</h1>
+    
+            <!-- Section for sensor readings -->
+            <div class='sensor-data'>
+                <h2>Sensor Readings</h2>
+                <!-- Paragraph showing Humidity. The span holds the dynamic value. -->
+                <p>: Humidity: <span id='humidity-value'>--</span></p>
+                <!-- Paragraph showing temperature. The span holds the dynamic value. -->
+                <p>Temperature: <span id='temp-value'>--</span> °C</p> <!-- ° is the degree symbol -->
+                <p>: Light level: <span id='lux-value'>--</span></p>
+    
+            </div>
+    
+            <!-- Section for system status -->
+            <div class='actuator-status'>
+                <h2>Actuctor Status</h2>
+                <p>DC Motor: <span id='dc-motor-status'></span></p>
+                <p>Servo: <span id='stepper-status'></span></p>
+    
+                <!-- Paragraph for Manual Override. Span holds dynamic value and class ('on' or 'off') -->
+            </div>
+    
+        </div> <!-- Close container div -->
+    
+        <!-- JavaScript code block -->
+        <script>
+            // --- WebSocket Connection ---
+            // Create a new WebSocket object.
+            // 'ws://' indicates a WebSocket connection (like http://).
+            // location.hostname gets the IP address/hostname the page was loaded from (the ESP32).
+            // '/ws' is the path on the server that handles WebSocket connections.
+            const ws = new WebSocket('ws://' + location.hostname + '/ws');
+    
+            // --- Helper Function ---
+            // Reusable function to update the text and CSS class of an element by its ID.
+            // id: The unique ID of the HTML element to update (e.g., 'Humidity', 'temp').
+            // value: The new text content to display.
+            // onClass: The CSS class to apply if the state is considered "on" (defaults to 'on').
+            // offClass: The CSS class to apply if the state is considered "off" (defaults to 'off').
+            function updateElement(id, value, onClass = 'on', offClass = 'off') {
+                // Find the HTML element in the page using its unique ID.
+                const element = document.getElementById(id);
+                // Check if the element was actually found.
+                if (element) {
+                    // Set the text content inside the element.
+                    element.textContent = value;
+                    // Check if the value represents an "on" or "active" state.
+                    if (typeof value === 'boolean' || value === 'ON' || value === 'ACTIVE') {
+                        // If "on", remove the 'off' class and add the 'on' class.
+                        element.classList.remove(offClass);
+                        element.classList.add(onClass);
+                    } else {
+                        // If "off", remove the 'on' class and add the 'off' class.
+                        element.classList.remove(onClass);
+                        element.classList.add(offClass);
+                    }
+                }
+            } // End of updateElement function
+    
+            // --- WebSocket Event Handlers ---
+            // This function runs automatically when the WebSocket connection is successfully established.
+            ws.onopen = function(event) {
+                console.log('WebSocket connection opened'); // Log message to browser console
+            };
+    
+            // This function runs automatically EVERY TIME a message is received from the server via WebSocket.
+            ws.onmessage = function(event) {
+                // event.data contains the message received (expected to be JSON text).
+                console.log('WebSocket message received:', event.data); // Log raw data
+                try {
+                    // Attempt to parse the received text (event.data) as JSON.
+                    const data = JSON.parse(event.data);
+    
+                    // Update the content of the element with id='Humidity'.
+                    document.getElementById('Humidity').textContent = data.Humidity;
+    
+                    // Update the temperature display, checking for the error value.
+                    document.getElementById('temp').textContent = (data.temp == -999.0) ? 'Error' : data.temp.toFixed(1);
+    
+                    // Use the helper function to update status elements:
+                    // Update Alarm Condition text and class ('alarm' or 'off').
+                    updateElement('alarmCondition', data.alarmCondition ? 'ACTIVE' : 'INACTIVE', 'alarm', 'off');
+                    // Update Buzzer Status text and class ('on' or 'off').
+                    updateElement('buzzerState', data.buzzerState ? 'ON' : 'OFF');
+                    // Update Manual Override text and class ('on' or 'off').
+                    updateElement('manualOverride', data.manualOverride ? 'ON' : 'OFF');
+    
+                } catch (e) {
+                    // If JSON.parse fails, log an error to the browser console.
+                    console.error('Error parsing WebSocket data:', e);
+                }
+            }; // End of ws.onmessage function
+    
+            // This function runs automatically if the WebSocket connection is closed.
+            ws.onclose = function(event) {
+                console.log('WebSocket connection closed');
+                // Update the UI to show an offline status.
+                updateElement('alarmCondition', 'OFFLINE', 'alarm', 'off');
+                updateElement('buzzerState', 'OFFLINE');
+                updateElement('manualOverride', 'OFFLINE');
+                // Future enhancement: Could try to reconnect here automatically.
+            };
+    
+            // This function runs automatically if a WebSocket error occurs.
+            ws.onerror = function(event) {
+                console.error('WebSocket error:', event);
+            };
+    
+            // --- Button Click Handler ---
+            // This function is called when the HTML button with onclick='toggleBuzzer()' is clicked.
+            function toggleBuzzer() {
+                // Check if the WebSocket connection is currently open and ready to send.
+                if (ws.readyState === WebSocket.OPEN) {
+                    // Send the simple text message "toggleBuzzer" back to the ESP32 server.
+                    ws.send('toggleBuzzer');
+                    console.log('Sent toggleBuzzer command'); // Log action
+                } else {
+                    // If connection isn't open, log an error (prevents errors).
+                    console.error('WebSocket is not open. Cannot send command.');
+                }
+            } // End of toggleBuzzer function
+        </script> <!-- End of JavaScript block -->
+    </body>
+
+    <script src="script.js"></script>
+</body>
+</html>
