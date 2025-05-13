@@ -1,5 +1,5 @@
 // IMPORTANT: Replace with your actual API Gateway Invoke URL + /data endpoint
-const apiUrl = 'https://56zrov84h2.execute-api.ap-southeast-1.amazonaws.com/prod/data';
+const apiUrl = 'https://56zrov84h2.execute-api.ap-southeast-1.amazonaws.com/prod/';
 
 function updateDashboard(data) {
     // Use default '--' if data or specific field is missing
