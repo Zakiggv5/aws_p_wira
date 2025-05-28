@@ -1,7 +1,7 @@
 // API Endpoints - CRITICAL: Update these with your actual deployed API Gateway URLs
 const getDataApiUrl = 'https://56zrov84h2.execute-api.ap-southeast-1.amazonaws.com/prod/data';
 // This is the NEW endpoint for sending mode changes and manual commands
-const setCommandApiUrl = 'https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com/YOUR_STAGE/manual-command'; // <<< UPDATE THIS
+const setCommandApiUrl = 'https://56zrov84h2.execute-api.ap-southeast-1.amazonaws.com/prod/manual-command'; // <<< UPDATE THIS
 
 // DOM Elements
 const humidityValueEl = document.getElementById('humidity-value');
