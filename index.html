@@ -5,35 +5,50 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>ESP32 Penyetabil Kenyamanan Ruangan</title>
     <link rel="stylesheet" href="style.css">
-    <body>
-        <!-- The main container div, applying '.container' styles -->
-        <div class='container'>
-            <!-- Main heading -->
-            <h1>Penyetabil Kenyamanan Ruangan</h1>
-    
-            <!-- Section for sensor readings -->
-            <div class='sensor-data'>
-                <h2>Sensor Readings</h2>
-                <!-- Paragraph showing Humidity. The span holds the dynamic value. -->
-                <p>: Humidity: <span id='humidity-value'>--</span></p>
-                <!-- Paragraph showing temperature. The span holds the dynamic value. -->
-                <p>Temperature: <span id='temp-value'>--</span> °C</p> <!-- ° is the degree symbol -->
-                <p>: Light level: <span id='lux-value'>--</span></p>
-                <p>Last Sensor Update: <span id='timestamp-value'>--</span></p>
-    
+</head>
+<body>
+    <div class='container'>
+        <h1>Penyetabil Kenyamanan Ruangan</h1>
+
+        <div class='sensor-data'>
+            <h2>Sensor Readings</h2>
+            <p>Humidity: <span id='humidity-value'>--</span> %</p>
+            <p>Temperature: <span id='temp-value'>--</span> °C</p>
+            <p>Light level: <span id='lux-value'>--</span></p>
+            <p>Last Sensor Update: <span id='timestamp-value'>--</span></p>
+        </div>
+
+        <div class='control-mode'>
+            <h2>Control Mode</h2>
+            <label class="switch">
+                <input type="checkbox" id="modeToggle">
+                <span class="slider round"></span>
+            </label>
+            <span id="modeStatusText">AUTO</span>
+        </div>
+
+        <div class='manual-controls' id="manualControlsContainer" style="display:none;">
+            <!-- Initially hidden, shown when mode is MANUAL -->
+            <h2>Manual Controls</h2>
+            <div>
+                <label for="dcMotorSlider">Kipas (DC Motor): <span id="dcMotorValueText">50</span>%</label>
+                <input type="range" min="0" max="100" value="50" class="slider-input" id="dcMotorSlider">
             </div>
-    
-            <!-- Section for system status -->
-            <div class='actuator-status'>
-                <h2>Actuctor Status</h2>
-                <p>DC Motor: <span id='dc-motor-status'></span></p>
-                <p>Servo: <span id='stepper-status'></span></p>
-    
-                <!-- Paragraph for Manual Override. Span holds dynamic value and class ('on' or 'off') -->
+            <div>
+                <label for="stepperSlider">Ventilasi (Servo): <span id="stepperValueText">50</span>%</label>
+                <input type="range" min="0" max="100" value="50" class="slider-input" id="stepperSlider">
             </div>
-    
-        </div> <!-- Close container div -->
-    </body>
+            <button id="sendManualCommandButton">Send Manual Command</button>
+        </div>
+
+        <div class='actuator-status'>
+            <h2>Last Logged Actuator Status</h2>
+            <p>DC Motor (Kipas): <span id='dc-motor-status'>--</span> %</p>
+            <p>Ventilasi (Servo): <span id='stepper-status'>--</span> %</p>
+            <p>Source: <span id='command-source'>--</span></p>
+            <p>Last Command Time: <span id='last-command-time'>--</span></p>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
