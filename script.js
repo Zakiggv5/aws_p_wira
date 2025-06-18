@@ -185,5 +185,5 @@ function fetchData() {
 
 // Fetch data immediately on load and then periodically
 fetchData();
-const pollInterval = 10000; // Poll every 10 seconds
+const pollInterval = 5000; // Poll every 10 seconds
 setInterval(fetchData, pollInterval);
